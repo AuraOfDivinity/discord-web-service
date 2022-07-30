@@ -11,5 +11,3 @@ app.listen(port, () => {
     console.log(`Example app listening at port http://localhost:${port}`)
 })
 
-// Error Handler Middleware
-app.use(errorMiddleware)
