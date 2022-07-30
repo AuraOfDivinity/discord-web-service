@@ -6,8 +6,8 @@ const {populate_upcoming_table, populate_past_table, get_all_upcoming_records} =
  * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/30 * * * * *", async function() {
-        console.log('running every 30 secs')
+    cron.schedule("*/5 * * * *", async function() {
+        console.log('running every 5 minutes')
 
         const browser = await puppeteer.launch()
         const page = await browser.newPage()
