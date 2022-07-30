@@ -62,9 +62,8 @@ const Past = sequelize.define('past', {
 
 
 const populate_upcoming_table = async(events) => {
-    Upcoming.destroy({
-        where: {},
-        truncate: true
+    await Upcoming.sync({
+        force:true
     })
     let created = await Upcoming.bulkCreate(events)
 }
