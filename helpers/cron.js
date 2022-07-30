@@ -52,12 +52,14 @@ const executeCronJob = () => {
                         break;
                 }
             })
-        
+
             return {
                 upcoming_events,
                 past_events
             }
         })
+
+        browser.close();
     });
 }
 
