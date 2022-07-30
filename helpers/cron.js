@@ -2,32 +2,62 @@ const cron = require('node-cron');
 const puppeteer = require("puppeteer")
 
 /**
- * Executes a job every 10 seconds
+ * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/30 * * * * *", async function() {
-        console.log("running a task every 10 second");
+    cron.schedule("*/10 * * * * *", async function() {
+        console.log('running every 30 secs')
+
         const browser = await puppeteer.launch()
         const page = await browser.newPage()
-        await page.goto("https://remoteok.io/remote-javascript-jobs")
+        await page.goto("https://mlh.io/seasons/2023/events", {waitUntil: 'networkidle0'})
 
         /* Run javascript inside the page */
         const data = await page.evaluate(() => {
-            const list = []
-            const items = document.querySelectorAll("tr.job")
+            const items = document.querySelectorAll("div.row")
         
-            for (const item of items) {
-            list.push({
-                company: item.querySelector(".company h3").innerHTML,
-                position: item.querySelector(".company h2").innerHTML,
-                link: "https://remoteok.io" + item.getAttribute("data-href"),
-            })
-            }
-        
-            return list
-        })
+            let upcoming_events = []
+            let past_events = []
 
-        console.log(data)
+            items.forEach((row, index)=> {
+                let events;
+                switch(index){
+                    case 1:
+                        events = row.querySelectorAll('div.event')
+                        events.forEach((event) => {
+                            upcoming_events.push({
+                                name: event.querySelector('h3.event-name').innerHTML,
+                                date: event.querySelector('p.event-date').innerHTML,
+                                city: event.querySelector('span[itemprop="city"]').innerHTML,
+                                state: event.querySelector('span[itemprop="state"]').innerHTML,
+                                hybrid_notes: event.querySelector('div.event-hybrid-notes > span').innerHTML,
+                                image_url: event.querySelector('div.image-wrap > img').getAttribute('src'),
+                                event_link: event.querySelector('a').getAttribute('href')
+                            })
+                        })
+                        break;
+                    case 2:
+                        events = row.querySelectorAll('div.event')
+                        events.forEach((event) => {
+                            past_events.push({
+                                name: event.querySelector('h3.event-name').innerHTML,
+                                date: event.querySelector('p.event-date').innerHTML,
+                                city: event.querySelector('span[itemprop="city"]').innerHTML,
+                                state: event.querySelector('span[itemprop="state"]').innerHTML,
+                                hybrid_notes: event.querySelector('div.event-hybrid-notes > span').innerHTML,
+                                image_url: event.querySelector('div.image-wrap > img').getAttribute('src'),
+                                event_link: event.querySelector('a').getAttribute('href')
+                            })
+                        })
+                        break;
+                }
+            })
+        
+            return {
+                upcoming_events,
+                past_events
+            }
+        })
     });
 }
 
