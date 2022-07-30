@@ -69,9 +69,8 @@ const populate_upcoming_table = async(events) => {
 }
 
 const populate_past_table = async(events) => {
-    Past.destroy({
-        where: {},
-        truncate: true
+    await Past.sync({
+        force:true
     })
     let created = await Past.bulkCreate(events)
 }
