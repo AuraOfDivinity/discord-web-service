@@ -1,11 +1,12 @@
 const cron = require('node-cron');
 const puppeteer = require("puppeteer")
+const {populate_upcoming_table, populate_past_table, get_all_upcoming_records} = require('../databse/database')
 
 /**
  * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/10 * * * * *", async function() {
+    cron.schedule("*/30 * * * * *", async function() {
         console.log('running every 30 secs')
 
         const browser = await puppeteer.launch()
@@ -59,7 +60,13 @@ const executeCronJob = () => {
             }
         })
 
+        console.log(data.upcoming_events, 'upcoming_events')
+        console.log(data.past_events, 'past_events')
         browser.close();
+
+        await populate_upcoming_table(data.upcoming_events)
+        await get_all_upcoming_records()
+        // await populate_past_table(data.past_events)
     });
 }
 
