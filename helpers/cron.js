@@ -6,9 +6,10 @@ const {populate_upcoming_table, populate_past_table, get_all_upcoming_records} =
  * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/5 * * * *", async function() {
-        console.log('running every 5 minutes')
+    cron.schedule("*/1 * * * *", async function() {
+        console.log('running every 1 minute')
 
+        try{
         const browser = await puppeteer.launch()
         const page = await browser.newPage()
         await page.goto("https://mlh.io/seasons/2023/events", {waitUntil: 'networkidle0'})
@@ -66,6 +67,9 @@ const executeCronJob = () => {
 
         await populate_upcoming_table(data.upcoming_events)
         await populate_past_table(data.past_events)
+        }catch(e){
+            console.log(e, "error in cron")
+        }
     });
 }
 
