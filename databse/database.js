@@ -62,15 +62,17 @@ const Past = sequelize.define('past', {
 
 
 const populate_upcoming_table = async(events) => {
-    await Upcoming.sync({
-        force:true
+    Upcoming.destroy({
+        where: {},
+        truncate: true
     })
     let created = await Upcoming.bulkCreate(events)
 }
 
 const populate_past_table = async(events) => {
-    Past.sync({
-        force:true
+    Past.destroy({
+        where: {},
+        truncate: true
     })
     let created = await Past.bulkCreate(events)
 }
@@ -80,8 +82,14 @@ const get_all_upcoming_records = async() => {
     return results
 }
 
+const get_all_past_records = async() => {
+    let results = await Past.findAll()
+    return results
+}
+
 module.exports= {
     populate_past_table,
     populate_upcoming_table,
-    get_all_upcoming_records
+    get_all_upcoming_records,
+    get_all_past_records
 }

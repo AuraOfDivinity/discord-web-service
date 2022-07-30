@@ -65,8 +65,7 @@ const executeCronJob = () => {
         browser.close();
 
         await populate_upcoming_table(data.upcoming_events)
-        await get_all_upcoming_records()
-        // await populate_past_table(data.past_events)
+        await populate_past_table(data.past_events)
     });
 }
 
