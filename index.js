@@ -12,9 +12,6 @@ app.use(cors())
 
 app.use(express.json())
 
-// Req and Res logger.
-app.use(accessLogMiddleware)
-
 app.use("/", routes)
 
 module.exports = app
