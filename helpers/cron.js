@@ -68,6 +68,16 @@ const executeCronJob = () => {
         // DELETE AFTER INTEGRATING USERS & SUBSCRIPTIONS
         let number_array = ['+94768327337']
 
+        data.upcoming_events.push({
+            name: 'Novo Hacks',
+            date: 'Dec 4th - 11th        ',
+            city: 'Everywhere',
+            state: 'Worldwide',
+            hybrid_notes: 'Digital Only',
+            image_url: 'https://s3.amazonaws.com/assets.mlh.io/events/splashes/000/211/649/thumb/INIT-generic_mlh-event-title.png?1657023979',
+            event_link: 'https://organize.mlh.io/participants/events/7953-global-hack-week-december-2022'
+        })
+
         data.upcoming_events.forEach((event) => {
             scraped_upcoming_hackathon_names.push(event.name)
         })
