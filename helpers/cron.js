@@ -1,13 +1,14 @@
 const cron = require('node-cron');
 const puppeteer = require("puppeteer")
 const {populate_upcoming_table, populate_past_table, get_all_upcoming_records} = require('../databse/database')
+const { send_twilio_message } =require('./message')
 
 /**
  * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/30 * * * *", async function() {
-        console.log('running every 30 minutes')
+    cron.schedule("*/1 * * * *", async function() {
+        console.log('running every 1 minutes')
 
         try{
         const browser = await puppeteer.launch()
@@ -61,8 +62,38 @@ const executeCronJob = () => {
             }
         })
 
-        console.log(data.upcoming_events, 'upcoming_events')
-        console.log(data.past_events, 'past_events')
+        let scraped_upcoming_hackathon_names = []
+        let stored_upcoming_hackathon_names = []
+        
+        // DELETE AFTER INTEGRATING USERS & SUBSCRIPTIONS
+        let number_array = ['+94768327337']
+
+        data.upcoming_events.forEach((event) => {
+            scraped_upcoming_hackathon_names.push(event.name)
+        })
+
+
+        const stored_upcoming_records = await get_all_upcoming_records()
+        stored_upcoming_records.forEach((event)=> {
+            stored_upcoming_hackathon_names.push(event.name)
+        })
+
+        let unique_elements = scraped_upcoming_hackathon_names.filter(function(obj) { return stored_upcoming_hackathon_names.indexOf(obj) == -1; });
+        if(unique_elements.length > 0){
+            let unique_hackathon_name = unique_elements[0]
+            let unique_hackathon_details;
+
+            data.upcoming_events.forEach((event) => {
+                if(event.name == unique_hackathon_name){
+                    unique_hackathon_details = event
+                }
+            })
+
+            number_array.forEach( async(number) => {
+                await send_twilio_message(number, unique_hackathon_details)
+            })
+        }
+
         browser.close();
 
         await populate_upcoming_table(data.upcoming_events)
