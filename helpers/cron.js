@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const puppeteer = require("puppeteer")
-const {populate_upcoming_table, populate_past_table, get_all_upcoming_records} = require('../databse/database')
+const {populate_upcoming_table, populate_past_table, get_all_upcoming_records, get_user_records} = require('../databse/database')
 const { send_twilio_message } =require('./message')
 
 /**
@@ -65,13 +65,16 @@ const executeCronJob = () => {
         let scraped_upcoming_hackathon_names = []
         let stored_upcoming_hackathon_names = []
         
-        // DELETE AFTER INTEGRATING USERS & SUBSCRIPTIONS
-        let number_array = ['+94768327337']
+        let subscribed_users = await get_user_records()
+        let number_array = []
+
+        subscribed_users.forEach((user_details) => {
+            number_array.push(user_details.phone_number)
+        })
 
         data.upcoming_events.forEach((event) => {
             scraped_upcoming_hackathon_names.push(event.name)
         })
-
 
         const stored_upcoming_records = await get_all_upcoming_records()
         stored_upcoming_records.forEach((event)=> {

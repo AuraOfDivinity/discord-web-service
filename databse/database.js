@@ -60,12 +60,36 @@ const Past = sequelize.define('past', {
     },
 })
 
+const User = sequelize.define('user', {
+    phone_number: {
+        type: Sequelize.STRING,
+    }
+})
+
 
 const populate_upcoming_table = async(events) => {
     await Upcoming.sync({
         force:true
     })
     let created = await Upcoming.bulkCreate(events)
+}
+
+const create_user_record = async(phone_number) => {
+    await User.sync()
+    let created = await User.create({
+        phone_number: phone_number
+    })
+}
+
+const get_user_records = async() => {
+    let results = await User.findAll()
+    return results
+}
+
+const delete_all_user_records = async()=> {
+    await User.sync({
+        force:true
+    })
 }
 
 const populate_past_table = async(events) => {
@@ -89,5 +113,8 @@ module.exports= {
     populate_past_table,
     populate_upcoming_table,
     get_all_upcoming_records,
-    get_all_past_records
+    get_all_past_records,
+    create_user_record,
+    get_user_records,
+    delete_all_user_records
 }
