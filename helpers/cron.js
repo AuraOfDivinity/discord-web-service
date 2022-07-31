@@ -7,8 +7,8 @@ const { send_twilio_message } =require('./message')
  * Executes a job every 30 seconds
  */
 const executeCronJob = () => {
-    cron.schedule("*/30 * * * *", async function() {
-        console.log('running every 30 minutes')
+    cron.schedule("*/1 * * * *", async function() {
+        console.log('running every 1 minutes')
 
         try{
         const browser = await puppeteer.launch()
